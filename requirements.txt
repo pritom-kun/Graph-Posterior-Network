@@ -1,0 +1,25 @@
+-f https://data.pyg.org/whl/torch-2.1.0+cu121.html
+
+pyblaze
+
+torch
+pandas
+sacred
+torch_geometric
+pyg_lib 
+torch_scatter 
+torch_sparse 
+torch_cluster 
+torch_spline_conv
+ogb
+attrs
+filelock
+tinydb
+tinydb-serialization
+pyyaml
+seaborn
+plotly
+pyro-ppl
+tensorflow
+gpflow
+torchmetrics
