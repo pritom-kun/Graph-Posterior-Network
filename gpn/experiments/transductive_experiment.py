@@ -280,7 +280,7 @@ class TransductiveExperiment:
             self.engine.model.set_finetuning(False)
 
         self.model.to(device)
-        self.model.make_tsne(self.dataset.train_loader._get_iterator().next())
+        # self.model.make_tsne(self.dataset.train_loader._get_iterator().next())
         self.model.to('cpu')
         
         self.dataset.train_dataset.to('cpu')

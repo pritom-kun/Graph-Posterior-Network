@@ -342,7 +342,7 @@ class TransductiveGraphEngine(Engine):
         metric_results = {}
         for s in self.splits:
             y_hat, y = evals[s]
-            print(s)
+            # print(s)
             y = self._aggregate_y(y, self.vecs)
             tmp_dict = {}
             for metric_key, metric in metrics.items():

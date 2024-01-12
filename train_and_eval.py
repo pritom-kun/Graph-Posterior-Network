@@ -1,6 +1,7 @@
 import os
 from typing import OrderedDict
 import yaml
+from pprint import pprint
 os.environ['MKL_THREADING_LAYER'] = 'GNU'
 
 import logging
@@ -18,6 +19,8 @@ from sacred import SETTINGS
 
 SETTINGS.CONFIG.READ_ONLY_CONFIG = False
 
+warnings.filterwarnings("ignore")
+
 ex = Experiment("my_exp")
 
 @ex.config
@@ -27,8 +30,8 @@ def config():
     db_collection = None
 
 
-@ex.main
-def run_experiment(run: dict, data: dict, model: dict, training: dict) -> dict:
+@ex.automain
+def run_experiment(run: dict, data: dict, model: dict, training: dict):
     """main function to run experiment with sacred support
 
     Args:
@@ -43,8 +46,8 @@ def run_experiment(run: dict, data: dict, model: dict, training: dict) -> dict:
     curr_dir = os.getcwd()
     model['curr_dir'] = curr_dir # for passing into gpn_base
 
-    home_dir = os.path.expanduser("~")
-    os.chdir(f"{home_dir}/Graph-Posterior-Network")
+    # home_dir = os.path.expanduser("~")
+    # os.chdir(f"{home_dir}/Graph-Posterior-Network")
 
     run_cfg = RunConfiguration(**run)
     data_cfg = DataConfiguration(**data)
@@ -52,6 +55,8 @@ def run_experiment(run: dict, data: dict, model: dict, training: dict) -> dict:
     train_cfg = TrainingConfiguration(**training)
     if torch.cuda.device_count() <= 0:
         run_cfg.set_values(gpu=False)
+    else:
+        print(torch.cuda.set_device(run_cfg.gpu))
 
     logging.info('Received the following configuration:')
     logging.info('RUN')
@@ -71,8 +76,8 @@ def run_experiment(run: dict, data: dict, model: dict, training: dict) -> dict:
     
     results = experiment.run()
 
-
-    metrics = [m[4:] for m in results.keys() if m.startswith('val_')]
+    print(results.keys())
+    metrics = [m[4:] for m in results.keys() if m.startswith('val_') and not m.endswith('_val')]
     result_values = {'val': [], 'test': []}
     
     for s in ('val', 'test'):
@@ -87,18 +92,21 @@ def run_experiment(run: dict, data: dict, model: dict, training: dict) -> dict:
                 result_values[s].append(None)
 
     df = pd.DataFrame(data=result_values, index=metrics)
+    save_dir = os.path.join(run_cfg.experiment_directory, run_cfg.experiment_name, f"{data_cfg.dataset}_results.csv")
+    df.to_csv(save_dir)
     print(df.to_markdown())
 
-    return results
+    # pprint(results)
+    # return results
 
-if __name__ == '__main__':
-    warnings.filterwarnings("ignore")
-    # config_path = "ood_loc_gpn_16"
-    config_path = "classification_gpn_16"
-    with open(f'configs/gpn/{config_path}.yaml', 'r') as config_file:
-        config_updates = yaml.safe_load(config_file)
+# if __name__ == '__main__':
+#     warnings.filterwarnings("ignore")
+#     config_path = "ood_loc_gpn_16"
+#     # config_path = "classification_gpn_16"
+#     with open(f'configs/gpn/{config_path}.yaml', 'r') as config_file:
+#         config_updates = yaml.safe_load(config_file)
 
-    config_updates['data']['dataset'] = "CiteSeer"
-    
-    ex.run(config_updates = config_updates)
-    # ex.run_commandline()
+#     config_updates['data']['dataset'] = "Cora"
+
+#     ex.run(config_updates = config_updates)
+#     # ex.run_commandline()

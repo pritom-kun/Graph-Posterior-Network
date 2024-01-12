@@ -2,6 +2,7 @@ from typing import Dict, Any
 import copy
 import numpy as np
 from sacred import Experiment
+from tqdm import tqdm
 from gpn.utils import RunConfiguration, DataConfiguration
 from gpn.utils import ModelConfiguration, TrainingConfiguration
 from .transductive_experiment import TransductiveExperiment
@@ -42,7 +43,7 @@ class MultipleRunExperiment:
         run_results = []
 
         for split_no in self.split_nos:
-            for init_no in self.init_nos:
+            for init_no in tqdm(self.init_nos):
                 self.data_cfg.set_values(split_no=split_no)
                 self.model_cfg.set_values(init_no=init_no)
 
@@ -57,6 +58,7 @@ class MultipleRunExperiment:
         result_keys = run_results[0].keys()
         result_values = {k: [v[k] for v in run_results] for k in result_keys}
         result_means = {k: float(np.array(v).mean()) for k, v in result_values.items()}
+        result_std = {k: float(np.array(v).std()) for k, v in result_values.items()}
 
         return_results = None
         # if only one configuration: behave as default experiment
@@ -66,6 +68,7 @@ class MultipleRunExperiment:
         else:
             return_results = {
                 **{f'{k}': v for k, v in result_means.items()},
+                **{f'{k}_std': v for k, v in result_std.items()},
                 **{f'{k}_val': v for k, v in result_values.items()}
             }
 
