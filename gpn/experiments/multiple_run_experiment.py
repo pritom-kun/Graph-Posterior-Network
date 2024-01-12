@@ -48,7 +48,7 @@ class MultipleRunExperiment:
                 self.model_cfg.set_values(init_no=init_no)
 
                 if self.run_cfg.ex_type == 'transductive':
-                    results = self.run_transductive_experiment()
+                    results = self.run_transductive_experiment(exp_no=init_no)
 
                 else:
                     raise ValueError
@@ -74,10 +74,12 @@ class MultipleRunExperiment:
 
         return return_results
 
-    def run_transductive_experiment(self) -> Dict[str, Any]:
+    def run_transductive_experiment(self, exp_no: int) -> Dict[str, Any]:
         experiment = TransductiveExperiment(
             self.run_cfg.clone(), self.data_cfg.clone(),
-            self.model_cfg.clone(), self.train_cfg.clone(), ex=self.ex)
+            self.model_cfg.clone(), self.train_cfg.clone(),
+            exp_no, ex=self.ex
+            )
         results = experiment.run()
 
         return results

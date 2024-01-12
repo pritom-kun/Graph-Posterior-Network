@@ -19,6 +19,7 @@ plots/**
 paper_utils/**
 analysis/**
 data/**
+wandb/**
 !data/README.md
 
 gpn.egg-info

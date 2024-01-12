@@ -8,6 +8,7 @@ import logging
 import torch
 import pandas as pd
 import numpy as np
+import wandb
 
 from collections import OrderedDict
 from sacred import Experiment
@@ -71,6 +72,8 @@ def run_experiment(run: dict, data: dict, model: dict, training: dict):
     logging.info('TRAINING')
     logging.info(train_cfg.to_dict())
     logging.info('-----------------------------------------')
+
+    wandb.init(project=run_cfg.experiment_name)
 
     experiment = MultipleRunExperiment(run_cfg, data_cfg, model_cfg, train_cfg, ex=ex)
     

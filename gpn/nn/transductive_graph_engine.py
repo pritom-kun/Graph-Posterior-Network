@@ -2,6 +2,7 @@ import os
 os.environ['MKL_THREADING_LAYER'] = 'GNU'
 
 import torch
+import wandb
 
 from pyblaze.nn.callbacks import CallbackException
 from pyblaze.nn.callbacks import TrainingCallback, PredictionCallback, \
@@ -43,7 +44,8 @@ class TransductiveGraphEngine(Engine):
     ### TRAINING
     ################################################################################
     def train(self, train_data, val_data=None, epochs=20, eval_every=None,
-              eval_train=False, eval_val=True, callbacks=None, metrics=None, gpu='auto', **kwargs):
+              eval_train=False, eval_val=True, callbacks=None, metrics=None, 
+              exp_no=0, gpu='auto', **kwargs):
 
         if metrics is None:
             metrics = {}
@@ -146,6 +148,11 @@ class TransductiveGraphEngine(Engine):
                 if eval_train:
                     eval_metrics_train = eval_metrics['train']
                     epoch_metrics = {**epoch_metrics, **{f'train_{k}': v for k, v in eval_metrics_train.items()}}
+                    # print(epoch_metrics)
+                    wandb.log({
+                        f"train/exp_{exp_no}_accuracy": epoch_metrics["train_accuracy"],
+                        f"val/exp_{exp_no}_accuracy": epoch_metrics["val_accuracy"]
+                    })
 
             # 2.4) Finish epoch
             try:
