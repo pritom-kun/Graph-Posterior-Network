@@ -41,10 +41,11 @@ class Storage():
     def __init__(self,
                  base_directory: str,
                  experiment_name: Optional[str] = '',
+                 dataset_name: Optional[str] = '',
                  experiment: Optional[Experiment] = None,
                  lock_timeout: int = 10):
 
-        cache_dir = os.path.join(base_directory, experiment_name)
+        cache_dir = os.path.join(base_directory, experiment_name, dataset_name)
         os.makedirs(cache_dir, exist_ok=True)
 
         self.experiment = experiment

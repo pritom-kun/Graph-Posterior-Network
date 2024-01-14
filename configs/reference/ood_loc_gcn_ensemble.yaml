@@ -5,6 +5,7 @@ run:
   save_model: true
   gpu: 0
   experiment_name: ood_loc
+  num_inits: 10
 data:
   split_no: 1
   dataset: CoraML

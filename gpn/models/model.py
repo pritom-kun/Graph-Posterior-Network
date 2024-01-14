@@ -135,6 +135,7 @@ class Model(nn.Module):
 
         storage = Storage(run_cfg.experiment_directory,
                           experiment_name=run_cfg.eval_experiment_name,
+                          dataset_name=data_cfg.dataset,
                           experiment=ex)
 
         storage_params = {**model_cfg.to_dict(ignore=model_cfg.default_ignore()),

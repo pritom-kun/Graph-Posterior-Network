@@ -8,7 +8,7 @@ run:
   gpu: 0 # or false
   
   experiment_name: classification
-
+  num_inits: 10
 
 data:
   

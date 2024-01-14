@@ -1,6 +1,6 @@
 # #!/bin/bash
 
-# either ood or classification
+# either ood (ood detection) or class (for missclassification detection)
 setting=$1
 
 # Array of your python scripts
@@ -11,17 +11,9 @@ run_script() {
     # CUDA_VISIBLE_DEVICES=$1 python $2 &
     # python3 "train_and_eval.py" with "configs/gpn/ood_loc_gpn_16.yaml" "data.dataset=$1" "run.gpu=$2" &
     if [ "$1" == "ood" ]; then
-        if [ "$2" == "AmazonPhotos" ] || [ "$2" == "AmazonComputers" ]; then
-            python3 "train_and_eval.py" with "configs/gpn/ood_loc_gpn_10.yaml" "data.dataset=$2" "run.gpu=$3" &
-        else
-            python3 "train_and_eval.py" with "configs/gpn/ood_loc_gpn_16.yaml" "data.dataset=$2" "run.gpu=$3" &
-        fi
+        python3 "train_and_eval.py" with "configs/reference/ood_loc_gcn_dropout.yaml" "data.dataset=$2" "run.gpu=$3" &
     elif [ "$1" == "class" ]; then
-        if [ "$2" == "AmazonPhotos" ] || [ "$2" == "AmazonComputers" ]; then
-            python3 "train_and_eval.py" with "configs/gpn/classification_gpn_10.yaml" "data.dataset=$2" "run.gpu=$3" &
-        else
-            python3 "train_and_eval.py" with "configs/gpn/classification_gpn_16.yaml" "data.dataset=$2" "run.gpu=$3" &
-        fi
+        python3 "train_and_eval.py" with "configs/reference/classification_gcn_dropout.yaml" "data.dataset=$2" "run.gpu=$3" &
     else
         echo "Wrong or missing parameter for running the script!"
         exit 1

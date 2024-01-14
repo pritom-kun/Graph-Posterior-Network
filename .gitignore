@@ -13,15 +13,14 @@ saved_experiments/**
 !saved_experiments/ood_loc/
 !saved_experiments/ood_loc/GPN.json
 !saved_experiments/ood_loc/GPN/
-saved_experiments/ood_loc/*
 
 plots/**
 paper_utils/**
 analysis/**
 data/**
 wandb/**
+results/**
 !data/README.md
 
 gpn.egg-info
-plots/
 nohup.out
